@@ -10,14 +10,7 @@
 
 #include "HID-Project.h"
 
-// PIN numbers (CONSTANTS)
-
-
-
-const uint8_t ENCODER_A  = 14; // rotary encoder: right
-const uint8_t ENCODER_B  = 15; // rotary encoder: left
-const uint8_t ENCODER_SW = 16; // rotary encoder: button
-
+// PIN numbers
 enum Switch_pos {
     BR_PIN = 3, // bottom row: right
     BL_PIN,     // bottom row: left
@@ -28,13 +21,21 @@ enum Switch_pos {
     TC_PIN,     // top row: center
     TR_PIN      // top row: right
 };
+const uint8_t number_of_switches = 8;
+// Switch_pos switch_pos;
+// Encode channels
+const uint8_t ENCODER_A  = 14; // rotary encoder: right
+const uint8_t ENCODER_B  = 15; // rotary encoder: left
+const uint8_t ENCODER_SW = 16; // rotary encoder: button
 
 const uint8_t pinLed = LED_BUILTIN;
-const uint8_t PIN = MRPIN;
-
 void setup() {
+
+    for ( uint8_t ii = BR_PIN; ii < number_of_switches + BR_PIN; ++ii ) {
+        pinMode( ii, INPUT_PULLUP );
+    }
     pinMode( pinLed, OUTPUT );
-    pinMode( PIN, INPUT_PULLUP );
+
     // Sends a clean report to the host. This is important on any Arduino type.
     Consumer.begin();
 
@@ -42,14 +43,14 @@ void setup() {
 
 void loop() {
     static unsigned long lastChange = 0;
-
-
-    if ( digitalRead( PIN ) == LOW && ( millis() - lastChange > 250 ) ) {
-        lastChange = millis();
-        digitalWrite( pinLed, HIGH );
-        Consumer.write(MEDIA_PLAY_PAUSE);
-    }
-    else {
-        digitalWrite( pinLed, LOW );
+    for ( uint8_t ii = BR_PIN; ii < number_of_switches + BR_PIN; ++ii ) {
+        if ( digitalRead( ii ) == LOW && ( millis() - lastChange > 250 ) ) {
+            lastChange = millis();
+            digitalWrite( pinLed, HIGH );
+            Consumer.write( MEDIA_PLAY_PAUSE );
+        }
+        else {
+            digitalWrite( pinLed, LOW );
+        }
     }
 }
