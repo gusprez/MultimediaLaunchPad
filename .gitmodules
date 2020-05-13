@@ -1,0 +1,3 @@
+[submodule "HID"]
+	path = HID
+	url = https://github.com/NicoHood/HID/
