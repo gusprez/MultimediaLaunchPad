@@ -29,8 +29,8 @@ const uint8_t ENCODER_B  = 15; // rotary encoder: left
 const uint8_t ENCODER_SW = 16; // rotary encoder: button
 
 const uint8_t pinLed = LED_BUILTIN;
-void setup() {
 
+void setup() {
     for ( uint8_t ii = BR_PIN; ii < number_of_switches + BR_PIN; ++ii ) {
         pinMode( ii, INPUT_PULLUP );
     }
@@ -47,7 +47,32 @@ void loop() {
         if ( digitalRead( ii ) == LOW && ( millis() - lastChange > 250 ) ) {
             lastChange = millis();
             digitalWrite( pinLed, HIGH );
-            Consumer.write( MEDIA_PLAY_PAUSE );
+            switch ( ii ) { // Cases for each key
+                case 3:
+                    Consumer.write( HID_CONSUMER_AL_CALCULATOR );
+                    break;
+                case 4:
+                    Consumer.write( HID_CONSUMER_AL_LOCAL_MACHINE_BROWSER );
+                    break;
+                case 5:
+                    Consumer.write( CONSUMER_BROWSER_FORWARD );
+                    break;
+                case 6:
+                    Consumer.write( CONSUMER_BROWSER_HOME );
+                    break;
+                case 7:
+                    Consumer.write(  CONSUMER_BROWSER_BACK );
+                    break;
+                case 8:
+                    Consumer.write( MEDIA_PREVIOUS );
+                    break;
+                case 9:
+                    Consumer.write( MEDIA_PLAY_PAUSE );
+                    break;
+                case 10:
+                    Consumer.write( MEDIA_NEXT );
+                    break;
+            }
         }
         else {
             digitalWrite( pinLed, LOW );
